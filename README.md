@@ -1,0 +1,2 @@
+# dataMiningProject
+Pritish, Nick, Daniel
