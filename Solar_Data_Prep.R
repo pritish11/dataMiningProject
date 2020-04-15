@@ -3,9 +3,19 @@
 #Version: 1
 
 
-#Reading in dataset and giving it an index
-solarInfo <- read.csv("solar.csv")
-n <- dim(solarInfo)[1]
+#Reading in dataset 
+#eleminating the wanting colums
+> setwd("~/solar R Project")
+> solarInfo = read.csv ('Solar.csv', stringsAsFactors = FALSE, encoding = 'UTF-8')
+> View(solarInfo)
+> install.packages('dplyr')
+> install.packages('ggplot2')
+> library(dplyr)
+> library(ggplot2)
+> solarInfo=solarInfo [, -c(1,4,5,6,8,9,13,15,16,27,28,30)]
+
+# giving it an index
+> n <- dim(solarInfo)[1]
 solarInfo$Index <- c(1:n)
 
 #Anuual KWH is our most important data
