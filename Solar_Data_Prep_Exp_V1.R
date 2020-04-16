@@ -1,19 +1,14 @@
-#Author: Nicholas Lovera
-#Date: 4/13/2020
-#Version: 1
-
-
-#Reading in dataset 
-#eleminating the wanting colums
-
-setwd("~/programs/R/project")
-solarInfo = read.csv ('Solar.csv')
-View(solarInfo)
 install.packages('dplyr')
 install.packages('ggplot2')
 library(dplyr)
 library(ggplot2)
+
+#Reading in dataset 
+#eleminating the wanting colums
+solarInfo = read.csv ('Solar.csv')
+View(solarInfo)
 solarInfo=solarInfo [, -c(1,4,5,6,8,9,13,15,16,27,28,30)]
+
 #Giving solarInfo an index
 n <- dim(solarInfo)[1]
 solarInfo$Index <- c(1:n)
@@ -64,6 +59,7 @@ t2.rnd
 
 #Saving data set with new info
 write.csv(solarInfo, "solarInfoNew", row.names= FALSE)
+View(solarInfoNew)
 
 #-----------------------------------------------------------------------
 #Exploratory
