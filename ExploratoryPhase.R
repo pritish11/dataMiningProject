@@ -2,7 +2,7 @@
 solarInfo <- read.csv("solarInfoAdj.csv")
 
 set.seed(8);
-n <-dim(solar)[1] 
+n <-dim(solarInfo)[1] 
 #runif() randomly draws numbers between 0 and 1, 
 #each with equal probability 
 #n generates n numbers 
