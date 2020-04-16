@@ -8,8 +8,8 @@ n <-dim(solar)[1]
 #n generates n numbers 
 #about 75% will be TRUE 
 train_ind<-runif(n) < 0.75 
-solar_train<-solar[train_ind,] 
-solar_test<-solar[!train_ind,] 
+solar_train<-solarInfo[train_ind,] 
+solar_test<-solarInfo[!train_ind,] 
 
 #Our predictors are Project Cost and incentive, target variable is Expected KWh Annual Production.
 #Rewrite as numeric
