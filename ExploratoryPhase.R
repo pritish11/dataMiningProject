@@ -1,8 +1,5 @@
 #Jiayu Yan
-solarInfo <- read.csv("solar.csv")
-n <- dim(solarInfo)[1]
-solarInfo$Index <- c(1:n)
-
+solarInfo <- read.csv("solarInfoAdj.csv")
 
 set.seed(8);
 n <-dim(solar)[1] 
@@ -40,3 +37,4 @@ solarInfo$X.Incentive <- cut(x=solarInfo$X.Incentive,
                              breaks=c(0,400000,600000,1000000),right=FALSE, 
                              labels=c("Under 400000","600000 to 1000000","Over 1000000"))
 
+write.csv(solarInfo, "solarInfoAdj2.csv")
