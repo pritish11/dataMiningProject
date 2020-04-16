@@ -10,6 +10,7 @@ n <-dim(solar)[1]
 train_ind<-runif(n) < 0.75 
 solar_train<-solarInfo[train_ind,] 
 solar_test<-solarInfo[!train_ind,] 
+#train set and test set for future refernece and model uses.
 
 #Our predictors are Project Cost and incentive, target variable is Expected KWh Annual Production.
 #Rewrite as numeric
