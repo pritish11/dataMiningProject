@@ -56,7 +56,7 @@ nnet01$wts
 #result is favor our predictions. Residential sectos have low annual production, and higher project cost have high annual production.
 
 
-
+#Clustering
 summary(solar_setup_train)
 #create a subset of the predictor variables
 #convert to numeric
