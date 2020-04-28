@@ -79,7 +79,7 @@ Cluster2 <-Xs[which(cluster==2),]
 summary(Cluster1)
 summary(Cluster2)
 
-#validate the clusters with white_wine_test
+#validate the clusters with solar_setup_test
 summary(solar_setup_test) 
 #convert to numeric
 solar_setup_test$Project.Cost<-as.numeric(solar_setup_test$Project.Cost)
