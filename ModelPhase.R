@@ -19,7 +19,7 @@ solar_setup_train$Sector<-as.factor(solar_setup_train$Sector)
 #perform min-max standardization on the Expected annual production variable 
 solar_setup_train$Expected.KWh.Annual.Production.mm <-((solar_setup_train$Expected.KWh.Annual.Productionmin((solar_setup_train$Expected.KWh.Annual.Production))/(max((solar_setup_train$Expected.KWh.Annual.Production) -min((solar_setup_train$Expected.KWh.Annual.Production))
 summary(solar_setup_train)
-#nnet our target is expected annual production based on cost and sector
+#nnet our target is sector based on cost and expected annual production
 #size=1 specifies 1 unit in the hidden layer 
 nnet01 <-nnet(Sector~Expected.KWh.Annual.Production+Project.Cost, data=solar_setup_train, size=1) 
 #plot the network
