@@ -2,7 +2,7 @@
 #-----------------------------------------------
 #Jiayu Yan
 #-----------------Modeling Phase----------------
-#install nnetand NeuralNetToolspackages and open both 
+#install nnetand NeuralNetToolspackages stats and c50
 install.packages("nnet")
 install.packages("NeuralNetTools")
 install.packages("stats")
@@ -13,7 +13,6 @@ library(stats)
 library(C50)
 
 #read trainning set from setup pahse
-
 summary(solar_setup_train)
 #convert binary and ordinal variables cost and sector to factors 
 solar_setup_train$Project.Cost<-as.factor(solar_setup_train$Project.Cost)
@@ -28,6 +27,7 @@ nnet01 <-nnet(Sector~Expected.KWh.Annual.Production+Project.Cost, data=solar_set
 plotnet(nnet01)
 #obtain the weights 
 nnet01$wts
+
 #-------------------------------------------------------------------------------
 #weights for multiple runs
 #[1] -0.5275817  0.2347443  0.6477832 -0.3090919  1.4280951  1.2459409
