@@ -6,9 +6,11 @@
 install.packages("nnet")
 install.packages("NeuralNetTools")
 install.packages("stats")
+install.packages("C50")
 library(nnet)
 library(NeuralNetTools)
 library(stats)
+library(C50)
 
 #read trainning set from setup pahse
 
@@ -19,7 +21,7 @@ solar_setup_train$Sector<-as.factor(solar_setup_train$Sector)
 #perform min-max standardization on the Expected annual production variable 
 solar_setup_train$Expected.KWh.Annual.Production.mm <-((solar_setup_train$Expected.KWh.Annual.Productionmin((solar_setup_train$Expected.KWh.Annual.Production))/(max((solar_setup_train$Expected.KWh.Annual.Production) -min((solar_setup_train$Expected.KWh.Annual.Production))
 summary(solar_setup_train)
-#nnet our target is sector based on cost and expected annual production
+#nnet our target is expected annual production based on cost and sector
 #size=1 specifies 1 unit in the hidden layer 
 nnet01 <-nnet(Sector~Expected.KWh.Annual.Production+Project.Cost, data=solar_setup_train, size=1) 
 #plot the network
@@ -56,41 +58,48 @@ nnet01$wts
 #result is favor our predictions. Residential sectos have low annual production, and higher project cost have high annual production.
 
 
-#Clustering
+#-------------------------------------------------------------------------------
+#ModelEvaluation
+#-------------------------------------------------------------------------------
+#read in the training and test data sets from setup phase
 summary(solar_setup_train)
-#create a subset of the predictor variables
-#convert to numeric
-solar_setup_train$Project.Cost<-as.numeric(solar_setup_train$Project.Cost)
-solar_setup_train$Sector<-as.numeric(solar_setup_train$Sector)
-#Sector 1 means Non-Residential, 2 means Residential
-X <-subset (solar_setup_train,select=c("Sector","Project.Cost")) 
-#scale both predictor variables using the Z-score and make the predictor variables a data frame 
-Xs<-as.data.frame(scale(X))
-colnames(Xs) <-c("Sector_z","Project.Cost_z")
-#if kmeanscommand is not found use
-#create 2 clusters with kmeans
-kmeans01 <-kmeans(Xs,centers=2) 
-#extract the clusters for each record
-cluster <-as.factor(kmeans01$cluster)
-#separate clusters into Cluster1 and Cluster2 
-Cluster1 <-Xs[which(cluster==1),] 
-Cluster2 <-Xs[which(cluster==2),]
-#descriptive statistics for each cluster
-summary(Cluster1)
-summary(Cluster2)
-
-#validate the clusters with solar_setup_test
-summary(solar_setup_test) 
-#convert to numeric
-solar_setup_test$Project.Cost<-as.numeric(solar_setup_test$Project.Cost)
-solar_setup_test$Sector<-as.numeric(solar_setup_test$Sector)
-#Sector 1 means Non-Residential, 2 means Residential
-X_test<-subset(solar_setup_test,select=c("Sector","Project.Cost"))
-Xs_test<-as.data.frame(scale(X_test))
-colnames(Xs_test) <-c("Sector_z","Project.Cost_z") 
-kmeans01_test <-kmeans(Xs_test,centers=2)
-cluster_test<-as.factor(kmeans01_test$cluster) 
-Cluster1_test <-Xs_test[which(cluster_test==1),] 
-Cluster2_test <-Xs_test[which(cluster_test==2),] 
-summary(Cluster1_test)
-summary(Cluster2_test)
+summary(solar_setup_test)
+solar_setup_train$Sector<-factor(solar_setup_train$Sector) 
+solar_setup_test$Sector<-factor(solar_setup_test$Sector) 
+solar_setup_train$Project.Cost<-as.factor(solar_setup_train$Project.Cost)
+solar_setup_test$Project.Cost<-as.factor(solar_setup_test$Project.Cost)
+C5 <-C5.0(formula = Sector ~ Expected.KWh.Annual.Production+Project.Cost+X.Incentive, data = solar_setup_train) 
+#build the test data set of only predictor variables
+test.X<-subset(x=solar_setup_test,select= c("Expected.KWh.Annual.Production","Project.Cost","X.Incentive")) 
+#run the model on test.X
+ypred<-predict(object=C5,newdata=test.X)
+#build the confusion matrix (contingency table)
+t1 <-table(solar_setup_test$Sector,ypred)
+row.names(t1) <-c("Actual: 0:","Actual: 1") 
+colnames(t1) <-c("Predicted: 0","Predicted: 1") 
+t1 <-addmargins(A = t1, FUN=list(Total = sum), quiet = TRUE) 
+t1
+#compute the evaluation measures
+accuracy <-(t1[1,1] + t1[2,2])/t1[3,3] 
+error_rate<-1-accuracy 
+sensitivity <-t1[2,2]/t1[2,3]
+specifity<-t1[1,1]/t1[1,3] 
+precision <-t1[2,2]/t1[3,2] 
+recall <-sensitivity 
+f1 <-2*(precision * recall)/(precision + recall) 
+f2 <-5*(precision * recall)/(4*precision+recall)
+f0_5 <-1.25*(precision*recall)/(0.25*precision+recall)
+# accuracy
+#[1] 0.9700678
+#accuracy
+#[1] 0.9700678
+# error_rate
+#[1] 0.02993224
+# sensitivity
+#[1] 0.9974919
+# specifity
+#[1] 0.5581098
+# precision
+#[1] 0.9713541
+# recall
+#[1] 0.9974919
